@@ -29,8 +29,8 @@ FROM gcr.io/distroless/base
 ENV HOME /home/keepy
 ENV PATH /home/keepy/bin:$PATH
 
-COPY --from=pkbuild /go/bin/pk* /home/keepy/bin/
-COPY --from=pkbuild /go/bin/perkeepd /home/keepy/bin/
+COPY --from=pkbuild /go/bin/pk* /usr/bin/
+COPY --from=pkbuild /go/bin/perkeepd /usr/bin/
 
 EXPOSE 80 443 3179 8080
 

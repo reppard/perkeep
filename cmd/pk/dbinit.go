@@ -100,7 +100,21 @@ func (c *dbinitCmd) RunCommand(args []string) error {
 	var err error
 	switch c.dbType {
 	case "postgres":
-		conninfo := fmt.Sprintf("user=%s dbname=%s host=%s password=%s sslmode=%s", c.user, "postgres", c.host, c.password, c.sslMode)
+		var port string
+		var sslmode string
+
+		port = os.Getenv("POSTGRES_PORT")
+		sslmode = os.Getenv("POSTGRES_SSLMODE")
+
+		if port == "" {
+			port = "5432"
+		}
+
+		if sslmode == "" {
+			sslmode = c.sslMode
+		}
+
+		conninfo := fmt.Sprintf("user=%s dbname=%s host=%s port=%s password=%s sslmode=%s", c.user, "postgres", c.host, port, c.password, sslmode)
 		rootdb, err = sql.Open("postgres", conninfo)
 	case "mysql":
 		// need to use an empty dbname to query tables
@@ -154,7 +168,21 @@ func (c *dbinitCmd) RunCommand(args []string) error {
 	var db *sql.DB
 	switch c.dbType {
 	case "postgres":
-		conninfo := fmt.Sprintf("user=%s dbname=%s host=%s password=%s sslmode=%s", c.user, dbname, c.host, c.password, c.sslMode)
+		var port string
+		var sslmode string
+
+		port = os.Getenv("POSTGRES_PORT")
+		sslmode = os.Getenv("POSTGRES_SSLMODE")
+
+		if port == "" {
+			port = "5432"
+		}
+
+		if sslmode == "" {
+			sslmode = c.sslMode
+		}
+
+		conninfo := fmt.Sprintf("user=%s dbname=%s host=%s port=%s password=%s sslmode=%s", c.user, dbname, c.host, port, c.password, sslmode)
 		db, err = sql.Open("postgres", conninfo)
 	case "sqlite":
 		db, err = sql.Open("sqlite", dbname)

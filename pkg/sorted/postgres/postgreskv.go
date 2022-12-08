@@ -22,6 +22,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 
 	"go4.org/jsonconfig"
@@ -48,8 +49,22 @@ func newKeyValueFromJSONConfig(cfg jsonconfig.Obj) (sorted.KeyValue, error) {
 		return nil, err
 	}
 
+	var port string
+	var sslmode_env string
+
+	port = os.Getenv("POSTGRES_PORT")
+	sslmode_env = os.Getenv("POSTGRES_SSLMODE")
+
+	if port == "" {
+		port = "5432"
+	}
+
+	if sslmode_env != "" {
+		sslmode = sslmode_env
+	}
+
 	// connect without a database, it may not exist yet
-	conninfo := fmt.Sprintf("user=%s host=%s sslmode=%s", user, host, sslmode)
+	conninfo := fmt.Sprintf("user=%s host=%s port=%s sslmode=%s", user, host, port, sslmode)
 	if password != "" {
 		conninfo += fmt.Sprintf(" password=%s", password)
 	}
